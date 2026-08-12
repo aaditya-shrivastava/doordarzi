@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { ArrowRight, Check, ChevronDown, Home, LocateFixed, MapPin, Package, Scissors, Search, Shirt, Sparkles, UserRound } from 'lucide-react'
 
 type MobileView = 'home' | 'services' | 'book' | 'orders' | 'login'
@@ -12,7 +12,43 @@ const services = [
   { icon: MapPin, title: 'Collection', copy: 'We come to your door', tone: 'blue' },
 ]
 
-function Header() { return <div className="mobile-app-topbar"><span className="mobile-time">9:41</span><div className="mobile-location"><MapPin size={15} fill="currentColor" /> Indore <ChevronDown size={12} /></div><a className="mobile-profile-link" href="/login" aria-label="Sign in"><UserRound size={16} /></a></div> }
+function Header() {
+  const [locationOpen, setLocationOpen] = useState(false)
+  const [location, setLocation] = useState('Indore')
+  const [query, setQuery] = useState('')
+  const [mapStatus, setMapStatus] = useState('')
+
+  function useCurrentLocation() {
+    if (!navigator.geolocation) {
+      setMapStatus('Location is not supported on this device.')
+      return
+    }
+    setMapStatus('Finding your location…')
+    navigator.geolocation.getCurrentPosition(
+      () => {
+        setLocation('Current location')
+        setMapStatus('Location selected')
+        setLocationOpen(false)
+      },
+      () => setMapStatus('Please allow location access or enter an area manually.'),
+      { enableHighAccuracy: true, timeout: 10000 },
+    )
+  }
+
+  function saveLocation(event: FormEvent) {
+    event.preventDefault()
+    const nextLocation = query.trim()
+    if (!nextLocation) return
+    setLocation(nextLocation)
+    setLocationOpen(false)
+    setQuery('')
+  }
+
+  return <>
+    <div className="mobile-app-topbar"><span className="mobile-time">9:41</span><button type="button" className="mobile-location" onClick={() => setLocationOpen(true)} aria-label="Choose delivery location"><MapPin size={15} fill="currentColor" /> <span>{location}</span> <ChevronDown size={12} /></button><a className="mobile-profile-link" href="/login" aria-label="Sign in"><UserRound size={16} /></a></div>
+    {locationOpen && <div className="location-picker-backdrop" role="presentation" onClick={() => setLocationOpen(false)}><section className="location-picker" role="dialog" aria-modal="true" aria-labelledby="location-picker-title" onClick={(event) => event.stopPropagation()}><div className="location-picker-handle" /><div className="location-picker-heading"><div><p className="eyebrow">Delivery location</p><h2 id="location-picker-title">Where should we<br /><em>come to you?</em></h2></div><button type="button" className="location-picker-close" onClick={() => setLocationOpen(false)} aria-label="Close location picker">×</button></div><form className="location-search-form" onSubmit={saveLocation}><MapPin size={17} /><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Enter area, street or landmark" aria-label="Enter location manually" /><button type="submit">Save</button></form><button type="button" className="map-location-option" onClick={useCurrentLocation}><span className="map-preview"><MapPin size={22} /></span><span><strong>Select on map</strong><small>Use your current location or choose a pin</small></span><ArrowRight size={18} /></button>{mapStatus && <p className="location-picker-status" role="status">{mapStatus}</p>}<p className="location-picker-hint">We&apos;ll use this to show services available at your doorstep.</p></section></div>}
+  </>
+}
 function SearchBar() { return <div className="mobile-search"><Search size={16} /> <span>Search for a service</span></div> }
 function ServicesView({ go }: { go: (view: MobileView) => void }) { return <section className="mobile-view"><div className="mobile-view-heading"><p className="eyebrow">Door Darzi services</p><h1>Good clothes.<br /><em>Good care.</em></h1><p>Choose what your wardrobe needs and we&apos;ll bring the next step to your door.</p></div><div className="mobile-service-list">{services.map(({ icon: Icon, title, copy, tone }) => <button className="mobile-service-list-item" key={title} onClick={() => go('book')}><span className={`mobile-service-icon ${tone}`}><Icon /></span><span><strong>{title}</strong><small>{copy}</small></span><ArrowRight /></button>)}</div></section> }
 function BookView() {
