@@ -16,28 +16,6 @@ const steps = [
   ['03', 'Wear it beautifully', 'Your finished garments return carefully checked, pressed and ready.'],
 ]
 
-const mobileServices = [
-  { icon: Scissors, label: 'Tailoring', tone: 'pink' },
-  { icon: Sparkles, label: 'Garment care', tone: 'purple' },
-  { icon: Shirt, label: 'Alterations', tone: 'orange' },
-  { icon: MapPin, label: 'Collection', tone: 'blue' },
-]
-
-function MobileAppHome() {
-  return <main className="mobile-app-home" aria-label="Door Darzi mobile app home">
-    <div className="mobile-app-topbar"><div className="mobile-location"><MapPin size={15} fill="currentColor" /> <span>Indore</span><ChevronDown size={12} /></div><span className="mobile-time">9:41</span></div>
-    <div className="mobile-app-content">
-      <div className="mobile-search"><span><span className="mobile-search-icon">⌕</span> Search for a service</span></div>
-      <div className="mobile-service-row">{mobileServices.map(({ icon: Icon, label, tone }) => <a href="#book" className="mobile-service" key={label}><span className={`mobile-service-icon ${tone}`}><Icon /></span><span>{label}</span></a>)}</div>
-      <a href="#book" className="mobile-banner"><span className="mobile-banner-copy"><small>DOORSTEP CARE</small><strong>Good clothes.<br />Good care.</strong><em>Book a collection →</em></span><span className="mobile-banner-art"><Scissors size={54} /></span></a>
-      <section className="mobile-membership"><div><p className="eyebrow">Your wardrobe membership</p><h2>Care that comes<br />back to you.</h2><strong>Flat 15% off</strong><p>Save more when your wardrobe stays in our care.</p></div><div className="mobile-membership-mark"><Shirt size={38} /></div></section>
-      <section className="mobile-recommendations"><div className="mobile-section-heading"><h2>Popular with Indore</h2><a href="#services">See all</a></div><div className="mobile-scroll-cards"><a href="#book" className="mobile-rec-card"><div className="mobile-rec-image tailoring"><Scissors /></div><strong>Fit & alterations</strong><small>From ₹199 · At your door</small></a><a href="#book" className="mobile-rec-card"><div className="mobile-rec-image care"><Sparkles /></div><strong>Garment care</strong><small>From ₹149 · Hand-finished</small></a><a href="#book" className="mobile-rec-card"><div className="mobile-rec-image collection"><MapPin /></div><strong>Book a collection</strong><small>Choose your time slot</small></a></div></section>
-      <div className="mobile-app-cta"><div><strong>Ready when you are.</strong><span>Tell us what needs doing.</span></div><a href="#book" aria-label="Book a collection"><ArrowRight /></a></div>
-    </div>
-    <nav className="mobile-bottom-nav" aria-label="App navigation"><a className="active" href="#top"><span>⌂</span>Home</a><a href="#services"><Scissors />Services</a><a href="#book"><MapPin />Book</a><a href="/track"><span>◷</span>Orders</a></nav>
-  </main>
-}
-
 export default function Page() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [address, setAddress] = useState('')
